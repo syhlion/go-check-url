@@ -18,6 +18,7 @@ type State struct {
 	Err  error
 }
 
+//自行實作 StateReader
 type StateReader interface {
 	ReadHead() chan<- State
 }
