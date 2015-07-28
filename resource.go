@@ -7,26 +7,26 @@ import (
 
 type Resource struct {
 	url          string //設定url ex http://tw.yahoo.com
-	pollInterval time.Duration
+	PollInterval time.Duration
 	errCount     int
-	errTimeOut   time.Duration
+	ErrTimeOut   time.Duration
 }
 
-func NewResource(u string) *Resource {
-	return &Resource{u, 60 * time.Second, 0, 10 * time.Second}
+func NewResource(u string, pollInterval time.Duration, ErrTimeout time.Duration) *Resource {
+	return &Resource{u, pollInterval, 0, ErrTimeout}
 }
 
 func (r *Resource) Poll() (*http.Response, error) {
 	res, err := http.Head(r.url)
 	if err != nil {
 		r.errCount++
-	} else {
-		r.errCount = 0
+		return nil, err
 	}
-	return res, err
+	r.errCount = 0
+	return res, nil
 }
 
 func (r *Resource) Sleep(done chan<- *Resource) {
-	time.Sleep(r.pollInterval + r.errTimeOut*time.Duration(r.errCount))
+	time.Sleep(r.PollInterval)
 	done <- r
 }
