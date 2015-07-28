@@ -1,4 +1,4 @@
-package main
+package checkurl
 
 import (
 	"net/http"
@@ -12,16 +12,21 @@ type Resource struct {
 	errTimeOut   time.Duration
 }
 
-type Resourcer interface {
-	ReadHead(rs *http.Response, err error)
+func NewResource(u string) *Resource {
+	return &Resource{u, 60 * time.Second, 0, 10 * time.Second}
 }
 
-func (r *Resource) poll(callback Resourcer) {
+func (r *Resource) Poll() (*http.Response, error) {
 	res, err := http.Head(r.url)
-	callback.ReadHead(res, err)
+	if err != nil {
+		r.errCount++
+	} else {
+		r.errCount = 0
+	}
+	return res, err
 }
 
-func (r *Resource) sleep(done chan<- *Resource) {
+func (r *Resource) Sleep(done chan<- *Resource) {
 	time.Sleep(r.pollInterval + r.errTimeOut*time.Duration(r.errCount))
 	done <- r
 }
