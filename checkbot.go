@@ -9,13 +9,13 @@ type Checkbot struct {
 	resources []*Resource
 	logs      *log.Logger
 	StateReader
-	threads int
+	Threads int
 }
 
 type State struct {
-	url  string
-	resp *http.Response
-	err  error
+	Url  string
+	Resp *http.Response
+	Err  error
 }
 
 type StateReader interface {
@@ -31,7 +31,7 @@ func poller(in <-chan *Resource, out chan<- *Resource, state chan<- State) {
 	for i := range in {
 		res, err := i.Poll()
 		out <- i
-		state <- State{resp: res, err: err, url: i.url}
+		state <- State{Resp: res, Err: err, Url: i.url}
 	}
 }
 
@@ -43,7 +43,7 @@ func (b *Checkbot) Start() {
 
 	state := b.ReadHead()
 
-	for i := 0; i < b.threads; i++ {
+	for i := 0; i < b.Threads; i++ {
 		go poller(pending, complete, state)
 	}
 
