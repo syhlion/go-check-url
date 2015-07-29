@@ -1,11 +1,12 @@
-package checkurl
+package httpbot
 
 import (
+	"io/ioutil"
 	"log"
 	"net/http"
 )
 
-type Checkbot struct {
+type Bot struct {
 	resources []*Resource
 	logs      *log.Logger
 	StateReader
@@ -23,20 +24,30 @@ type StateReader interface {
 	ReadHead() chan<- State
 }
 
-func NewBot(r []*Resource, l *log.Logger, cb StateReader) *Checkbot {
-	return &Checkbot{r, l, cb, 3}
+func NewBot(r []*Resource, l *log.Logger, cb StateReader) *Bot {
+	return &Bot{r, l, cb, 3}
+
+}
+
+func ReadHtml(resp *http.Response) (ret string) {
+	defer resp.Body.Close()
+
+	if body, err := ioutil.ReadAll(resp.Body); err == nil {
+		ret = string(body)
+	}
+	return
 
 }
 
 func poller(in <-chan *Resource, out chan<- *Resource, state chan<- State) {
 	for i := range in {
-		res, err := i.Poll()
+		res, err := i.poll()
 		out <- i
-		state <- State{Resp: res, Err: err, Url: i.url}
+		state <- State{Resp: res, Err: err, Url: i.HttpRequest.URL.String()}
 	}
 }
 
-func (b *Checkbot) Start() {
+func (b *Bot) Start() {
 
 	b.logs.Println("Bot Start...")
 	pending := make(chan *Resource)
@@ -53,7 +64,7 @@ func (b *Checkbot) Start() {
 	}
 
 	for c := range complete {
-		c.Sleep(pending)
+		c.sleep(pending)
 	}
 
 }
