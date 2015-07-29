@@ -21,7 +21,7 @@ type State struct {
 
 //自行實作 StateReader
 type StateReader interface {
-	ReadHead() chan<- State
+	ReadResponse() chan<- State
 }
 
 func NewBot(r []*Resource, l *log.Logger, cb StateReader) *Bot {
@@ -53,7 +53,7 @@ func (b *Bot) Start() {
 	pending := make(chan *Resource)
 	complete := make(chan *Resource)
 
-	state := b.ReadHead()
+	state := b.ReadResponse()
 
 	for i := 0; i < b.Threads; i++ {
 		go poller(pending, complete, state)
