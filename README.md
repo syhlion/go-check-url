@@ -57,6 +57,15 @@ func main() {
 		logger = log.New(os.Stdout, "logger:", log.Ldate|log.Ltime)
 	}
 	moniter := &Moniter{logger}
+    18     //  req, err := http.NewRequest("GET", u, nil)
+    19     //  if err != nil {
+    20     //      panic(err)
+    21     //  }
+    22     //  req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+    23     //  req.Header.Set("Accept-Encoding", "gzip,deflate")
+    24     //  req.Header.Set("Connection", "keep-alive")
+    25     //  req.Header.Set("Accept-Language", "en-US,en;q=0.5")
+    26     //  req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:39.0) Gecko/20100101 Firefox/39.0")
 
     //需要new 新的 resource 參數分別為 url,抓取間格時間
 	resource := checkurl.NewResource("http://tw.yahoo.com", 1*time.Second)
