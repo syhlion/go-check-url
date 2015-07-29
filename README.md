@@ -1,13 +1,14 @@
-#checkurl
+# checkurl
 
+練習go concurrent，此套件可以拿同時查詢關注的網頁是否存活
 
-###Installation：
+### Installation：
 
 ```
     go get -u github.com/syhlion/go-check-url
 ```
 
-###Usage：
+### Usage：
 ```
 package main
 
@@ -58,8 +59,8 @@ func main() {
 	moniter := &Moniter{logger}
 
     //需要new 新的 resource 參數分別為 url,抓取間格時間
-	resource := checkurl.NewResource("http://tw.yahoo.com", 1*time.Second, 1*time.Second)
-	resource2 := checkurl.NewResource("http://www.google.com.tw", 1*time.Second, 1*time.Second)
+	resource := checkurl.NewResource("http://tw.yahoo.com", 1*time.Second)
+	resource2 := checkurl.NewResource("http://www.google.com.tw", 1*time.Second)
 	resources := []*checkurl.Resource{resource, resource2}
 
     //最後需要new 一個bot 傳入 []*Resource *log.Logger, ReadHead interface{}
