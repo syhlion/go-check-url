@@ -1,4 +1,4 @@
-# checkurl
+# httpbot
 
 Help me use http crawler
 
