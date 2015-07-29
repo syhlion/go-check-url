@@ -26,7 +26,7 @@ type Moniter struct {
 	*log.Logger
 }
 
-func (m *Moniter) ReadHead() chan<- httpbot.State {
+func (m *Moniter) ReadResponse() chan<- httpbot.State {
 	updates := make(chan httpbot.State)
 	go func() {
 		for {
