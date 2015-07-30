@@ -40,9 +40,9 @@ func ReadHtml(resp *http.Response) (ret string) {
 
 }
 
-func poller(in <-chan *Resource, out chan<- *Resource, state chan<- State) {
+func dispatcher(in <-chan *Resource, out chan<- *Resource, state chan<- State) {
 	for i := range in {
-		res, err := i.Poll()
+		res, err := i.Get()
 		out <- i
 		state <- State{Resp: res, Err: err, Url: i.HttpRequest.URL.String()}
 	}
@@ -57,7 +57,7 @@ func (b *Bot) Start() {
 	state := b.Read()
 
 	for i := 0; i < b.Threads; i++ {
-		go poller(pending, complete, state)
+		go dispatcher(pending, complete, state)
 	}
 
 	for _, r := range b.resources {
