@@ -2,8 +2,6 @@
 
 Help me use http crawler can custom everyone response & request
 
-It base on [Gorilla Websocket](https://github.com/gorilla/websocket)
-
 ### Installation：
 
 ```
