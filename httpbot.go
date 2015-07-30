@@ -19,7 +19,8 @@ type State struct {
 	Err  error
 }
 
-//自行實作 StateReader
+//StateReader
+//最後出口接受器
 type StateReader interface {
 	Read() chan<- State
 }

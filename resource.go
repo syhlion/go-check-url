@@ -11,31 +11,30 @@ type Resource struct {
 	// Set Poll Interval
 	PollInterval time.Duration
 
-	respQuene  *ResponseQuene
+	respQuene  []ResponseReader
 	httpClient *http.Client
 }
 
+//ResponseReader
+//可以每個ResponseReader 都可以接受到後客製化新的request重新送出
 type ResponseReader interface {
 	Read(resp *http.Response) (*http.Response, error)
 }
 
-func NewResource(httpreq *http.Request, pollInterval time.Duration, respQuene *ResponseQuene, client *http.Client) *Resource {
+func NewResource(httpreq *http.Request, pollInterval time.Duration, respQuene []ResponseReader, client *http.Client) *Resource {
 	if client == nil {
 		client = &http.Client{}
 	}
 	return &Resource{httpreq, pollInterval, respQuene, client}
 }
 
-func (r *Resource) poll() (*http.Response, error) {
-	res, err := r.httpClient.Do(r.HttpRequest)
-	if err != nil {
-		return nil, err
-	}
-	for i := 0; i < r.respQuene.size; i++ {
-		res, err = r.respQuene.Pop().Read(res)
+func (r *Resource) poll() (res *http.Response, err error) {
+	res, err = r.httpClient.Do(r.HttpRequest)
+	for _, cb := range r.respQuene {
+		res, err = cb.Read(res)
 	}
 
-	return res, nil
+	return
 }
 
 func (r *Resource) sleep(done chan<- *Resource) {
