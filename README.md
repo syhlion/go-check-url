@@ -20,7 +20,6 @@ import (
 	"net/http"
 	"os"
 	"time"
-
 	"github.com/syhlion/go-httpbot"
 )
 
@@ -66,24 +65,18 @@ func (m *Moniter) Read() chan<- httpbot.State {
 	return updates
 }
 
-var logDir = flag.String("logDir", "", "log dir")
 var logger *log.Logger
 
 func main() {
-	flag.Parse()
-	if f, err := os.OpenFile(*logDir, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0775); err == nil {
-		logger = log.New(f, "logger:", log.Ldate|log.Ltime)
-	} else {
-		logger = log.New(os.Stdout, "logger:", log.Ldate|log.Ltime)
-	}
+
+	logger = log.New(os.Stdout, "logger:", log.Ldate|log.Ltime)
 	moniter := &Moniter{logger}
 	req, err := http.NewRequest("GET", "http://www.googlw.com", nil)
 	if err != nil {
 		panic(err)
 	}
-
     //客制response 鍊 可以不斷串接
-	quene := &CustomResponseReader{&CustomResponseReader{logger}}
+	quene := []CustomResponseReader{&CustomResponseReader{logger}}
 
 	resource := httpbot.NewResource(req, 1*time.Second,quene, nil)
 	resources := []*httpbot.Resource{resource}
