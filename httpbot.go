@@ -42,7 +42,7 @@ func ReadHtml(resp *http.Response) (ret string) {
 
 func poller(in <-chan *Resource, out chan<- *Resource, state chan<- State) {
 	for i := range in {
-		res, err := i.poll()
+		res, err := i.Poll()
 		out <- i
 		state <- State{Resp: res, Err: err, Url: i.HttpRequest.URL.String()}
 	}

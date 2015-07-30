@@ -28,7 +28,7 @@ func NewResource(httpreq *http.Request, pollInterval time.Duration, respQuene []
 	return &Resource{httpreq, pollInterval, respQuene, client}
 }
 
-func (r *Resource) poll() (res *http.Response, err error) {
+func (r *Resource) Poll() (res *http.Response, err error) {
 	res, err = r.httpClient.Do(r.HttpRequest)
 	for _, cb := range r.respQuene {
 		res, err = cb.Read(res)
